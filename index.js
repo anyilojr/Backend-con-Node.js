@@ -1,5 +1,7 @@
 const express = require('express');
 const routerApi = require('./routes');
+// Importar middleware
+const { logErrors, errorHandler, boomErrorHandler } = require('./Middleware/error.handler'); //importar las funciones que se uilizarán
 
 const app = express();
 const port = 3000;
@@ -16,28 +18,12 @@ app.get('/nueva-ruta', (req, res)=> {
 
 routerApi(app);
 
+// Utilizamos los middleware. Siempre deben ir después del routing:
+app.use(logErrors);
+app.use(boomErrorHandler);
+app.use(errorHandler);
 
 app.listen(port, () => {
   console.log('Mi port' + port);
 })
 
-
-// app.get('/users', (req, res)=>{
-//   const { limit, offset } = req.query;
-//   if(limit && offset){
-//     res.json({
-//       limit,
-//       offset
-//     });
-//   } else {
-//     res.send('No hay parametros');
-//   }
-// });
-
-// app.get('/categories/:categoyId/products/:productId', (req, res) => {
-//   const { categoryId, productId } = req.params;
-//   res.json({
-//     categoryId,
-//     productId,
-//   });
-// });
